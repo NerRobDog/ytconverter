@@ -11,6 +11,9 @@ import yt_dlp
 from ytconverter.constants import URL_RE
 from ytconverter.utils import sanitize
 
+# Maximum length for sanitized titles
+MAX_TITLE_LENGTH = 60
+
 
 class DownloadService:
     """Service class for handling video/audio downloads programmatically."""
@@ -19,6 +22,20 @@ class DownloadService:
     def validate_url(url: str) -> bool:
         """Validate YouTube URL."""
         return bool(URL_RE.match(url))
+    
+    @staticmethod
+    def _sanitize_title(title: str, max_length: int = MAX_TITLE_LENGTH) -> str:
+        """
+        Sanitize and truncate title for safe file naming.
+        
+        Args:
+            title: Original title
+            max_length: Maximum length for truncated title
+            
+        Returns:
+            Sanitized and truncated title
+        """
+        return sanitize(title)[:max_length]
     
     @staticmethod
     def get_video_info(url: str) -> Dict[str, Any]:
@@ -92,7 +109,7 @@ class DownloadService:
         
         # Get video info
         info = DownloadService.get_video_info(url)
-        title = sanitize(info["title"])[:60]
+        title = DownloadService._sanitize_title(info["title"])
         
         # Determine output path
         if output_path:
@@ -161,7 +178,7 @@ class DownloadService:
         
         # Get video info
         info = DownloadService.get_video_info(url)
-        title = sanitize(info["title"])[:60]
+        title = DownloadService._sanitize_title(info["title"])
         
         # Determine output path
         if output_path:
@@ -184,8 +201,13 @@ class DownloadService:
             "merge_output_format": "mp4",
         }
         
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+        except yt_dlp.utils.DownloadError as e:
+            raise RuntimeError(f"yt-dlp download failed: {str(e)}")
+        except Exception as e:
+            raise RuntimeError(f"Unexpected error during download: {str(e)}")
         
         duration = int(time.time() - start_time)
         
@@ -229,7 +251,7 @@ class DownloadService:
             info = ydl.extract_info(url, download=False)
         
         playlist_title = info.get("title") or info.get("playlist_title") or "playlist"
-        safe_playlist_title = sanitize(playlist_title)[:60]
+        safe_playlist_title = DownloadService._sanitize_title(playlist_title)
         
         # Determine output path
         if output_path:

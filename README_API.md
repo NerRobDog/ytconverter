@@ -384,6 +384,11 @@ You can override these paths in each API request using the `output_path` paramet
   - Example: `export YTCONVERTER_API_KEYS="key1,key2,key3"`
   - If not set, the API runs in open mode (no authentication)
 
+- `YTCONVERTER_CORS_ORIGINS`: CORS allowed origins (comma-separated or "*" for all)
+  - Production: `export YTCONVERTER_CORS_ORIGINS="https://yourdomain.com,https://api.yourdomain.com"`
+  - Development: `export YTCONVERTER_CORS_ORIGINS="*"` (default)
+  - Security: Always restrict CORS origins in production
+
 ## Docker Deployment
 
 ### Basic Docker Setup

@@ -1,9 +1,17 @@
 """FastAPI application for YTConverter."""
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from ytconverter.api.routes import router
 from ytconverter.config import load_local_version
+
+# Get allowed origins from environment or default to all
+ALLOWED_ORIGINS = os.environ.get("YTCONVERTER_CORS_ORIGINS", "*")
+if ALLOWED_ORIGINS == "*":
+    origins = ["*"]
+else:
+    origins = [origin.strip() for origin in ALLOWED_ORIGINS.split(",")]
 
 # Create FastAPI app
 app = FastAPI(
@@ -17,7 +25,7 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
