@@ -35,6 +35,16 @@ def main():
     mutually_exclusive_group.add_argument(
         "-h", "--help", action="help", help="Show this help message.")
 
+    mutually_exclusive_group.add_argument(
+        "--api", action="store_true", help="Launch the FastAPI REST API server.")
+
+    # API server options (only used with --api)
+    parser.add_argument(
+        "--host", default="0.0.0.0", help="API server host (default: 0.0.0.0)")
+    
+    parser.add_argument(
+        "--port", type=int, default=8000, help="API server port (default: 8000)")
+
     args = parser.parse_args()
 
     if args.update:
@@ -51,6 +61,15 @@ def main():
     elif args.S:
         from ytconverter.cli.menu import main_loop
         main_loop()
+        return
+
+    elif args.api:
+        import uvicorn
+        from ytconverter.api.app import app
+        print(f"Starting YTConverter API server on {args.host}:{args.port}")
+        print(f"API Documentation: http://{args.host}:{args.port}/docs")
+        print(f"Set YTCONVERTER_API_KEYS environment variable to enable authentication")
+        uvicorn.run(app, host=args.host, port=args.port)
         return
 
     else:
