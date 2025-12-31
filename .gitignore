@@ -5,4 +5,10 @@ rm_cache.py
 *.txt
 __pycache__
 auto.sh
+*.log
+.pytest_cache
+.venv
+venv
+downloads
+audio_temp
 

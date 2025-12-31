@@ -2,3 +2,7 @@ yt-dlp
 fontstyle
 colored
 httpx
+fastapi
+uvicorn[standard]
+pydantic
+python-multipart
