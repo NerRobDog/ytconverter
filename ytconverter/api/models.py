@@ -73,6 +73,7 @@ class PlaylistDownloadResponse(BaseModel):
     playlist_title: Optional[str] = None
     folder_path: Optional[str] = None
     video_count: Optional[int] = None
+    duration: Optional[int] = None
 
 
 class ErrorResponse(BaseModel):

@@ -1,6 +1,6 @@
 """API routes for YTConverter."""
 
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Any
 
 from ytconverter.api.models import (
@@ -49,7 +49,6 @@ async def get_video_info(
 @router.post("/download/single-mp3", response_model=DownloadResponse)
 async def download_single_mp3(
     request: SingleMP3Request,
-    background_tasks: BackgroundTasks,
     api_key: str = Depends(verify_api_key)
 ):
     """
@@ -73,7 +72,6 @@ async def download_single_mp3(
 @router.post("/download/single-mp4", response_model=DownloadResponse)
 async def download_single_mp4(
     request: SingleMP4Request,
-    background_tasks: BackgroundTasks,
     api_key: str = Depends(verify_api_key)
 ):
     """
@@ -97,7 +95,6 @@ async def download_single_mp4(
 @router.post("/download/playlist-mp3", response_model=PlaylistDownloadResponse)
 async def download_playlist_mp3(
     request: PlaylistRequest,
-    background_tasks: BackgroundTasks,
     api_key: str = Depends(verify_api_key)
 ):
     """
@@ -123,7 +120,6 @@ async def download_playlist_mp3(
 @router.post("/download/playlist-mp4", response_model=PlaylistDownloadResponse)
 async def download_playlist_mp4(
     request: PlaylistRequest,
-    background_tasks: BackgroundTasks,
     api_key: str = Depends(verify_api_key)
 ):
     """
